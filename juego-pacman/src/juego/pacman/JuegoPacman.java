@@ -14,25 +14,35 @@ public class JuegoPacman {
      * @param args the command line arguments
      */
     public static void main(String[] args) {
-        // TODO code application logic here
+        
         System.out.println("**********************\n"
                 + "*1. Jugar            *\n"
                 + "*2. Historial        *\n"
                 + "*3. Salir            *\n"
                 + "**********************"); //Muestra el menu
-        Scanner MyObj = new Scanner(System.in);
-        int menu_opcion = MyObj.nextInt();
         
-        if(menu_opcion == 1){
-            System.out.println("Ingrese su nombre: ");
-            String nombre = MyObj.nextLine();
+        Scanner Scn = new Scanner(System.in);
+        int menu_opcion = Scn.nextInt();
+        
+        if(menu_opcion == 1)
+        {
+            System.out.println("Ingrese su nombre:  ");
+            String nombre = Scn.next();
             
             System.out.println("Ingrese su edad: ");
-            int edad = MyObj.nextInt();
+            int edad = Scn.nextInt();
             
             System.out.println("Ingrese las dimensiones del tablero"
                     + "(Tamaño mínimo 8*8): ");
-            
+        }
+        else if(menu_opcion == 2)
+        {
+            System.out.println("MOSTRAR HISTORIAL"); // Se mostrara el historial (pendiente)
+        }
+        else if(menu_opcion == 3)
+        {
+            System.out.println("Se salió del juego.");
+            System.exit(0);
         }
             
     }
