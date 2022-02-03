@@ -75,14 +75,27 @@ public class JuegoPacman {
 //          Columnas
             for(int columna = 0; columna < tablero[filas - 1].length; columna++)
             {
-                System.out.print(tablero[0][columna] + "*");
+//              Espacio para el portal en las columnas                
+                if(columna != (columnas / 2)){
+                    System.out.print(tablero[0][columna] + "*");
+                }else{
+                    System.out.print(tablero[0][columna] + " ");
+                }
+                
                 
 //          Aca iran las trampas
                 for(int fila = 0; fila < tablero.length; fila++)
                 {
                     System.out.print(tablero[fila][1] + "  ");
                 }
-                System.out.println(tablero[filas - 1][columna] + "*");
+                
+//              Espacio para el portal en las columnas
+                if(columna != (columnas / 2)){
+                    System.out.println(tablero[filas - 1][columna] + "*");
+                }else{
+                    System.out.println(tablero[filas - 1][columna] + " ");
+                }
+                
             }
 //          Parte de abajo
             for(int fila = 0; fila < tablero.length; fila++)
