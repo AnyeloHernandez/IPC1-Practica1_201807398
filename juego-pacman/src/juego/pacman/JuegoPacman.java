@@ -13,9 +13,9 @@ public class JuegoPacman {
 //      Estructura base para el movimiento de Pacman.   
         int filas = 8, columnas = 8;
         
-//        int[][] pacman = new int[fila][columna];
-      
-//        pacman[0][0] = 0;
+        int[][] pacman = new int[filas][columnas];
+        
+        pacman[0][0] = 0;
 
 //      Arreglos para el historial.
         String[] nombre = new String[50];
@@ -64,46 +64,53 @@ public class JuegoPacman {
                 }
             }
 //          Creacion del tablero
-            char[][] tablero = new char[filas][columnas];
+            String[][] tablero = new String[filas][columnas];
             
 //          Parte de arriba
             for(int fila = 0; fila < tablero.length; fila++)
             {
-                System.out.print(tablero[fila][0] + " *");
+                tablero[fila][0] = " *"; 
+                System.out.print(tablero[fila][0]);
             }
-            System.out.println(""); //solo para darle forma, no borrar bajo ningun motivo o podria ocasionar glitches graficos
-//          Columnas
-            for(int columna = 0; columna < tablero[filas - 1].length; columna++)
+            System.out.println(""); //solo para darle forma
+            for(int columna = 1; columna < tablero[0].length; columna++)
             {
 //              Espacio para el portal en las columnas                
                 if(columna != (columnas / 2)){
-                    System.out.print(tablero[0][columna] + "*");
+                    tablero[0][columna] = "*"; 
+                    System.out.print(tablero[0][columna]);
                 }else{
-                    System.out.print(tablero[0][columna] + " ");
+                    tablero[0][columna] = " "; 
+                    System.out.print(tablero[0][columna]);
                 }
                 
-                
-//          Aca iran las trampas
-                for(int fila = 0; fila < tablero.length; fila++)
+                for (int j = 1; j < tablero[0].length; j++)
                 {
-                    System.out.print(tablero[fila][1] + "  ");
+                    tablero[j][columna] = "  ";
+                    System.out.print(tablero[j][columna]);
+                    if(j == tablero[0].length -1)
+                    {
+                        if(columna != (columnas / 2))
+                        {
+                            tablero[tablero.length - 1][columna] = "*"; 
+                            System.out.println(tablero[tablero.length - 1][columna]);
+                        }else{
+                            tablero[tablero.length - 1][columna] = " "; 
+                            System.out.println(tablero[tablero.length - 1][columna]);
+                        }
+                    }
                 }
                 
-//              Espacio para el portal en las columnas
-                if(columna != (columnas / 2)){
-                    System.out.println(tablero[filas - 1][columna] + "*");
-                }else{
-                    System.out.println(tablero[filas - 1][columna] + " ");
-                }
-                
+
             }
 //          Parte de abajo
-            for(int fila = 0; fila < tablero.length; fila++)
+            for(int fila = 0; fila < tablero[0].length; fila++)
             {
-            System.out.print(tablero[0][columnas - 1]+ " *");
+                tablero[fila][tablero.length - 1] = " *"; 
+                System.out.print(tablero[fila][tablero.length - 1]);
             }
-            
         }
+    
         else if(menu_opcion == 2)
         {
 //          Impresion del historial
