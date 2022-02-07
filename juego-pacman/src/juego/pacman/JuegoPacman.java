@@ -1,5 +1,6 @@
 package juego.pacman;
-import java.util.Scanner; // Importa la clase Scanner
+import java.util.Scanner; // Importa la libreria Scanner
+import java.util.Random; // Importa la libreria Random
 /**
  *
  * @author anyelo
@@ -11,18 +12,23 @@ public class JuegoPacman {
      */
     public static void main(String[] args) {
 //      Estructura base para el movimiento de Pacman.   
-        int filas = 8, columnas = 8;
+        int filas, columnas;
+        String movimiento;
         
-        int[][] pacman = new int[filas][columnas];
+        Random rand = new Random();
         
-        pacman[0][0] = 0;
+//      Posicion inicial de pacman
+        int PosX, PosY;
+//      Generador de paredes        
+        int RandX, RandY;
 
 //      Arreglos para el historial.
         String[] nombre = new String[50];
         int[] edad = new int[50];
         int[] puntaje = new int[50];
         int[] movimientos = new int[50];
-        
+        while(true)
+        {
 //      Muestra el menu.
         System.out.println("**********************\n"
                 + "*1. Jugar            *\n"
@@ -32,6 +38,7 @@ public class JuegoPacman {
         
         Scanner Scn = new Scanner(System.in);
         int menu_opcion = Scn.nextInt();
+        
         
         if(menu_opcion == 1)
         {
@@ -65,49 +72,126 @@ public class JuegoPacman {
             }
 //          Creacion del tablero
             String[][] tablero = new String[filas][columnas];
+            String[][] pacman = new String[filas][columnas];
+//          Decide la posicion inicial de pacman            
+            PosX = rand.nextInt(filas);
+            PosY = rand.nextInt(columnas);
+            pacman[PosX][PosY] = " V";
+//          Genera paredes dependiendo de cuantas filas y columnas hayan           
+            RandX = rand.nextInt(columnas/2);
+            RandY = rand.nextInt(filas/2);
             
-//          Parte de arriba
-            for(int fila = 0; fila < tablero.length; fila++)
-            {
-                tablero[fila][0] = " *"; 
-                System.out.print(tablero[fila][0]);
-            }
-            System.out.println(""); //solo para darle forma
-            for(int columna = 1; columna < tablero[0].length; columna++)
-            {
-//              Espacio para el portal en las columnas                
-                if(columna != (columnas / 2)){
-                    tablero[0][columna] = "*"; 
-                    System.out.print(tablero[0][columna]);
-                }else{
-                    tablero[0][columna] = " "; 
-                    System.out.print(tablero[0][columna]);
-                }
+            while(true){
                 
-                for (int j = 1; j < tablero[0].length; j++)
+//          Parte de arriba
+            for(int fila = 0; fila < filas; fila++)
+            {
+                tablero[fila][0] = "**"; 
+            }
+//          Columnas y espacios en blanco
+            for(int columna = 1; columna < columnas; columna++)
+            {
+//              Espacio para el portal en las columnas (columna izquierda)                
+                if(columna != (columnas / 2)){
+                    tablero[0][columna] = "* "; 
+                }else{
+                    tablero[0][columna] = "  "; 
+                }
+//              Espacios en blanco
+                for (int fila = 1; fila < filas; fila++)
                 {
-                    tablero[j][columna] = "  ";
-                    System.out.print(tablero[j][columna]);
-                    if(j == tablero[0].length -1)
+                    if(PosX == fila && PosY == columna)
                     {
-                        if(columna != (columnas / 2))
+                        tablero[fila][columna] = " V";
+                    }else{
+                        tablero[fila][columna] = "  ";
+                        if(fila == filas - 1)
                         {
-                            tablero[tablero.length - 1][columna] = "*"; 
-                            System.out.println(tablero[tablero.length - 1][columna]);
-                        }else{
-                            tablero[tablero.length - 1][columna] = " "; 
-                            System.out.println(tablero[tablero.length - 1][columna]);
+//                          Espacio para el portal en las columnas (columna derecha)
+                            if(columna != (columnas / 2))
+                            {
+                                tablero[tablero.length - 1][columna] = " *"; 
+                            }else{
+                                tablero[tablero.length - 1][columna] = "  "; 
+                            }
                         }
                     }
                 }
-                
-
             }
 //          Parte de abajo
-            for(int fila = 0; fila < tablero[0].length; fila++)
+            for(int fila = 0; fila < filas; fila++)
             {
-                tablero[fila][tablero.length - 1] = " *"; 
-                System.out.print(tablero[fila][tablero.length - 1]);
+                tablero[fila][tablero[0].length - 1] = "**"; 
+            }
+            
+            
+//          Impresión de la tabla            
+            for(int columna = 0; columna < columnas; columna++){
+                for(int fila = 0; fila < filas; fila++){
+                    System.out.print(tablero[fila][columna]);
+                }
+                System.out.println(" ");
+            }
+//          Ingresa el movimiento
+            System.out.println("Ingrese el movimiento [WASD]: ");
+            movimiento = Scn.next();
+//          Cierra la partida actual
+            if("m".equals(movimiento) || "M".equals(movimiento))
+            {
+                break;
+            }
+//          Mueve el pacman
+            while(true)
+            {
+                
+                System.out.println("\n\n\n\n\n\n\n\n\n\n\n\n\n");
+                if("w".equals(movimiento) || "W".equals(movimiento))
+                {
+                    if(tablero[PosX][PosY - 1] != "**")
+                    {
+                        PosY = PosY - 1;
+                        break;
+                    }else{
+                        PosY = PosY;
+                        break;
+                    }
+                    
+                }
+                if("s".equals(movimiento) || "S".equals(movimiento))
+                {
+                    if(tablero[PosX][PosY + 1] != "**")
+                    {
+                        PosY = PosY + 1;
+                        break;
+                    }else{
+                        PosY = PosY;
+                        break;
+                    }
+                }
+                if("a".equals(movimiento) || "A".equals(movimiento))
+                {
+                    if(tablero[PosX - 1][PosY] != "* ")
+                    {
+                        PosX = PosX - 1;
+                        break;
+                    }else{
+                        PosX = PosX;
+                        break;
+                    }
+                }
+                if("d".equals(movimiento) || "D".equals(movimiento))
+                {
+                    if(tablero[PosX + 1][PosY] != " *")
+                    {
+                        PosX = PosX + 1;
+                        break;
+                    }else{
+                        PosX = PosX;
+                        break;
+                    }
+                }
+                
+            }
             }
         }
     
@@ -130,6 +214,8 @@ public class JuegoPacman {
         {
             System.out.println("Se salió del programa.");
             System.exit(0);
+        }
+        
         }
             
     }
