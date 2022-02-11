@@ -22,6 +22,8 @@ public class JuegoPacman {
         int PosX, PosY;
 //      Generador de paredes        
         int columnaRandom, filaRandom;
+//      Para guardar el historial
+        int contador_datos = 0;
 
 //      Arreglos para el historial.
         String[] nombre = new String[50];
@@ -40,12 +42,16 @@ public class JuegoPacman {
         Scanner Scn = new Scanner(System.in);
         int menu_opcion = Scn.nextInt();
         
-        
+        if(exit == true)
+            {
+                exit = false;
+                contador = 0;
+            }
         if(menu_opcion == 1)
         {
 //          Se ingresa el nombre.
             System.out.println("Ingrese su nombre:  ");
-            nombre[0] = Scn.next();
+            nombre[contador_datos] = Scn.next();
             for(int i = 0; i <= 50; i++)
                 {
                     if(nombre[i] != null){
@@ -57,7 +63,7 @@ public class JuegoPacman {
             
 //          Se ingresa la edad.
             System.out.println("Ingrese su edad: ");
-            edad[0] = Scn.nextInt();
+            edad[contador_datos] = Scn.nextInt();
             
             System.out.println("Ingrese las dimensiones del tablero"
                     + "(Tamaño mínimo 8*8): ");
@@ -83,11 +89,6 @@ public class JuegoPacman {
             String[][] tablero = new String[filas][columnas];
             
             while(exit != true){
-            if(exit == true)
-            {
-                exit = false;
-                break;
-            }
 //          Decide la posicion inicial de pacman               
             PosX = rand.nextInt(filas);//filas = 10 | 0, 1, 2,...,9
             PosY = rand.nextInt(columnas);
@@ -164,13 +165,15 @@ public class JuegoPacman {
                 do{
                     columnaRandom = rand.nextInt(columnas - 1);
                     filaRandom = rand.nextInt(filas - 1);
-                    if(!"#".equals(tablero[filaRandom][columnaRandom]) && !"*".equals(tablero[filaRandom][columnaRandom]) &&
-                            !"*".equals(tablero[filaRandom][columnaRandom]) && !"V".equals(tablero[filaRandom][columnaRandom]))
+                    if(!"#".equals(tablero[filaRandom][columnaRandom]) && 
+                            !"*".equals(tablero[filaRandom][columnaRandom]) &&
+                            !"*".equals(tablero[filaRandom][columnaRandom]) &&
+                            !"V".equals(tablero[filaRandom][columnaRandom]))
                     {
                     tablero[filaRandom][columnaRandom] = "*";
                     contador++;
                     }
-                }while(contador<=10);
+                }while(contador<=columnas);
                 while(exit != true)
                 {
 //              Impresión de la tabla                
@@ -181,10 +184,6 @@ public class JuegoPacman {
                     System.out.println("");
                 }
 
-
-//              Mueve el pacman    
-                
-                    
 //                  Ingresa el movimiento    
                     System.out.println("Ingrese el movimiento [WASD][M para salir]: ");
                     movimiento = Scn.next();
@@ -199,9 +198,10 @@ public class JuegoPacman {
                             tablero[PosX][PosY] = " ";
                             PosY = PosY - 1;
                             tablero[PosX][PosY] = "V";
-                            
+                            movimientos[contador_datos] += 1;
                         }else{
                             PosY = PosY;
+                            movimientos[contador_datos] += 1;
                         }
 
                     }
@@ -213,44 +213,64 @@ public class JuegoPacman {
                             tablero[PosX][PosY] = " ";
                             PosY = PosY + 1;
                             tablero[PosX][PosY] = "V";
+                            movimientos[contador_datos] += 1;
                         }else{
                             PosY = PosY;
+                            movimientos[contador_datos] += 1;
                         }
                     }
 //                  Mueve a la izquierda
                     else if("a".equals(movimiento) || "A".equals(movimiento))
                     {
-                        if(tablero[PosX - 1][PosY] != "*")
+//                      Teletransportación del lado izquierdo
+                        if(PosX == 0)
+                        {
+                            if(tablero[filas - 1][PosY] == "*")
+                            {
+                                PosX = PosX;
+                                movimientos[contador_datos] += 1;
+                            }else{
+                            tablero[PosX][PosY] = " ";
+                            PosX = filas - 1;
+                            tablero[PosX][PosY] = "V";
+                            }
+                        }
+                        else if(tablero[PosX - 1][PosY] != "*")
                         {
                             tablero[PosX][PosY] = " ";
                             PosX = PosX - 1;
                             tablero[PosX][PosY] = "V";
-                            if(PosX == 0)
-                            {
-                                tablero[PosX][PosY] = " ";
-                                PosX = filas - 2;
-                                tablero[PosX][PosY] = "V";
-                            }
+                            movimientos[contador_datos] += 1;
                         }else{
                             PosX = PosX;
+                            movimientos[contador_datos] += 1;
                         }
                     }
 //                  Mueve a la derecha
                     else if("d".equals(movimiento) || "D".equals(movimiento))
                     {
-                        if(tablero[PosX + 1][PosY] != "*")
+//                      Teletransportación del lado derecho
+                        if(PosX == filas - 1)
+                            {
+                            if(tablero[0][PosY] == "*")
+                            {
+                                PosX = PosX;
+                                movimientos[contador_datos] += 1;
+                            }else{
+                                tablero[PosX][PosY] = " ";
+                                PosX = 0;
+                                tablero[PosX][PosY] = "V";
+                            }
+                        }
+                        else if(tablero[PosX + 1][PosY] != "*")
                         {
                             tablero[PosX][PosY] = " ";
                             PosX = PosX + 1;
                             tablero[PosX][PosY] = "V";
-                            if(PosX == filas - 1)
-                            {
-                                tablero[PosX][PosY] = " ";
-                                PosX = 1;
-                                tablero[PosX][PosY] = "V";
-                            }
+                            movimientos[contador_datos] += 1;
                         }else{
                             PosX = PosX;
+                            movimientos[contador_datos] += 1;
                         }
                     
                     }
@@ -258,6 +278,7 @@ public class JuegoPacman {
                     else if("m".equals(movimiento) || "M".equals(movimiento))
                     {
                         exit = true;
+                        contador_datos++;
                     }else{
                         System.out.println("Ingrese una tecla valida!");
                     }
@@ -275,7 +296,8 @@ public class JuegoPacman {
                     System.out.println("Nombre del jugador: "+ nombre[i]);
                     System.out.println("Edad: "+ edad[i]);
                     System.out.println("Puntaje: "+ puntaje[i]);
-                    System.out.println("Movimientos: "+ movimientos[i]);   
+                    System.out.println("Movimientos: "+ movimientos[i]);
+                    System.out.println("");
                 }
             }
             System.out.println("MOSTRAR HISTORIAL"); // Se mostrara el historial (pendiente)
