@@ -12,16 +12,16 @@ public class JuegoPacman {
      */
     public static void main(String[] args) {
 //      Estructura base para el movimiento de Pacman.   
-        int filas, columnas;
+        int filas, columnas, contador = 0;
         String movimiento;
-        boolean exit=false;
+        boolean exit = false;
         
         Random rand = new Random();
         
 //      Posicion inicial de pacman
         int PosX, PosY;
 //      Generador de paredes        
-        int RandX, RandY;
+        int columnaRandom, filaRandom;
 
 //      Arreglos para el historial.
         String[] nombre = new String[50];
@@ -81,8 +81,8 @@ public class JuegoPacman {
             }
 //          Creacion del tablero
             String[][] tablero = new String[filas][columnas];
-            String[][] pacman = new String[filas][columnas];         
-            while(true){
+            
+            while(exit != true){
             if(exit == true)
             {
                 exit = false;
@@ -91,22 +91,9 @@ public class JuegoPacman {
 //          Decide la posicion inicial de pacman               
             PosX = rand.nextInt(filas);//filas = 10 | 0, 1, 2,...,9
             PosY = rand.nextInt(columnas);
-            pacman[PosX][PosY] = "V";
-//          Genera paredes dependiendo de cuantas filas y columnas hayan           
-            RandX = rand.nextInt(columnas/2);
-            RandY = rand.nextInt(filas/2);
             
-            for(int ParedY = 0; ParedY <= RandY; ParedY++){
-                for(int ParedX = 0; ParedX <= RandX; ParedX++){
-                    
-                }
-            }
-            
-            while(true)
+            while(exit != true)
             {
-                 if(exit == true){
-                        break;
-                    }
 //              Parte de arriba    
                 for(int fila = 0; fila < filas; fila++)
                 {
@@ -136,7 +123,11 @@ public class JuegoPacman {
                     {
                         if(PosX == fila && PosY == columna)
                         {
-                            tablero[fila][columna] = "V";
+                            if(PosX != filas -1 && columnas != filas -1){
+                            tablero[fila][columna] = "V";   
+                            }else{
+                                tablero[fila][columna] = "*";
+                            }
                         }else{
                             tablero[fila][columna] = " ";
                             if(fila == filas - 1)
@@ -164,8 +155,24 @@ public class JuegoPacman {
                 {
                     tablero[fila][tablero[0].length - 1] = "*"; 
                 }
+//              Revisa si el pacman aparece dentro de una celda con valor *
+                if(tablero[PosX][PosY] == "*"){
+                    break;
+                }
 
-
+//              Genera paredes dependiendo de cuantas filas y columnas hayan           
+                do{
+                    columnaRandom = rand.nextInt(columnas - 1);
+                    filaRandom = rand.nextInt(filas - 1);
+                    if(!"#".equals(tablero[filaRandom][columnaRandom]) && !"*".equals(tablero[filaRandom][columnaRandom]) &&
+                            !"*".equals(tablero[filaRandom][columnaRandom]) && !"V".equals(tablero[filaRandom][columnaRandom]))
+                    {
+                    tablero[filaRandom][columnaRandom] = "*";
+                    contador++;
+                    }
+                }while(contador<=10);
+                while(exit != true)
+                {
 //              Impresión de la tabla                
                 for(int columna = 0; columna < columnas; columna++){
                     for(int fila = 0; fila < filas; fila++){
@@ -173,35 +180,28 @@ public class JuegoPacman {
                     }
                     System.out.println("");
                 }
-//              Revisa si el pacman aparece dentro de una celda con valor *
-                if(tablero[PosX][PosY] == "*"){
-                    System.out.println("\n\n\n\n\n\n\n\n\n\n\n\n\n");
-                    break;
-                }
+
 
 //              Mueve el pacman    
-                while(true)
-                {
+                
                     
 //                  Ingresa el movimiento    
                     System.out.println("Ingrese el movimiento [WASD][M para salir]: ");
                     movimiento = Scn.next();
   
                     System.out.println("\n\n\n\n\n\n\n\n\n\n\n\n\n");
-                    if(exit == true){
-                        
-                        break;
-                    }
+
 //                  Mueve hacia arriba                    
                     if("w".equals(movimiento) || "W".equals(movimiento))
                     {
                         if(tablero[PosX][PosY - 1] != "*")
                         {
+                            tablero[PosX][PosY] = " ";
                             PosY = PosY - 1;
-                            break;
+                            tablero[PosX][PosY] = "V";
+                            
                         }else{
                             PosY = PosY;
-                            break;
                         }
 
                     }
@@ -210,11 +210,11 @@ public class JuegoPacman {
                     {
                         if(tablero[PosX][PosY + 1] != "*")
                         {
+                            tablero[PosX][PosY] = " ";
                             PosY = PosY + 1;
-                            break;
+                            tablero[PosX][PosY] = "V";
                         }else{
                             PosY = PosY;
-                            break;
                         }
                     }
 //                  Mueve a la izquierda
@@ -222,15 +222,17 @@ public class JuegoPacman {
                     {
                         if(tablero[PosX - 1][PosY] != "*")
                         {
+                            tablero[PosX][PosY] = " ";
                             PosX = PosX - 1;
+                            tablero[PosX][PosY] = "V";
                             if(PosX == 0)
                             {
+                                tablero[PosX][PosY] = " ";
                                 PosX = filas - 2;
+                                tablero[PosX][PosY] = "V";
                             }
-                            break;
                         }else{
                             PosX = PosX;
-                            break;
                         }
                     }
 //                  Mueve a la derecha
@@ -238,15 +240,17 @@ public class JuegoPacman {
                     {
                         if(tablero[PosX + 1][PosY] != "*")
                         {
+                            tablero[PosX][PosY] = " ";
                             PosX = PosX + 1;
+                            tablero[PosX][PosY] = "V";
                             if(PosX == filas - 1)
                             {
+                                tablero[PosX][PosY] = " ";
                                 PosX = 1;
+                                tablero[PosX][PosY] = "V";
                             }
-                            break;
                         }else{
                             PosX = PosX;
-                            break;
                         }
                     
                     }
@@ -254,10 +258,8 @@ public class JuegoPacman {
                     else if("m".equals(movimiento) || "M".equals(movimiento))
                     {
                         exit = true;
-                        break;
                     }else{
                         System.out.println("Ingrese una tecla valida!");
-                        break;
                     }
                 }
             }
@@ -272,8 +274,8 @@ public class JuegoPacman {
                 { 
                     System.out.println("Nombre del jugador: "+ nombre[i]);
                     System.out.println("Edad: "+ edad[i]);
-                    System.out.println(puntaje[i]);
-                    System.out.println(movimientos[i]);   
+                    System.out.println("Puntaje: "+ puntaje[i]);
+                    System.out.println("Movimientos: "+ movimientos[i]);   
                 }
             }
             System.out.println("MOSTRAR HISTORIAL"); // Se mostrara el historial (pendiente)
@@ -284,8 +286,6 @@ public class JuegoPacman {
             System.exit(0);
         }
         
-        }
-            
+        }       
     }
-    
 }
