@@ -24,6 +24,16 @@ public class JuegoPacman {
         int columnaRandom, filaRandom;
 //      Para guardar el historial
         int contador_datos = 0;
+//      Fruta de 10 puntos
+        int contador_fruta_1 = 0; // @
+//      Fruta de 15 puntos
+        int contador_fruta_2 = 0; // $
+//      Fruta de -10 puntos        
+        int contador_fruta_3 = 0; // #
+        
+        int minimoFilas = 1;
+        int minimoColumnas = 1;
+
 
 //      Arreglos para el historial.
         String[] nombre = new String[50];
@@ -88,10 +98,13 @@ public class JuegoPacman {
 //          Creacion del tablero
             String[][] tablero = new String[filas][columnas];
             
+            int maximoFilas = filas - 2;
+            int maximoColumnas = columnas - 2;
+            
             while(exit != true){
 //          Decide la posicion inicial de pacman               
-            PosX = rand.nextInt(filas);//filas = 10 | 0, 1, 2,...,9
-            PosY = rand.nextInt(columnas);
+            PosX = rand.nextInt(maximoFilas + minimoFilas) + minimoFilas;//filas = 10 | 0, 1, 2,...,9
+            PosY = rand.nextInt(maximoColumnas + minimoColumnas) + minimoColumnas;
             
             while(exit != true)
             {
@@ -160,22 +173,72 @@ public class JuegoPacman {
                 if(tablero[PosX][PosY] == "*"){
                     break;
                 }
+//              Añade la fruta de 15 puntos                
+                do{
+                    columnaRandom = rand.nextInt(maximoColumnas + minimoColumnas) + minimoColumnas;
+                    filaRandom = rand.nextInt(maximoFilas + minimoFilas) + minimoFilas;
+                    if(!"#".equals(tablero[filaRandom][columnaRandom]) && 
+                            !"*".equals(tablero[filaRandom][columnaRandom]) &&
+                            !"$".equals(tablero[filaRandom][columnaRandom]) &&
+                            !"#".equals(tablero[filaRandom][columnaRandom]) &&
+                            !"@".equals(tablero[filaRandom][columnaRandom]) &&
+                            !"V".equals(tablero[filaRandom][columnaRandom]))
+                    {
+                        tablero[filaRandom][columnaRandom] = "$";
+                        contador_fruta_2++;
+                    }
+                }while(contador_fruta_2 <= 0);
+            
+//              Añade la fruta de 10 puntos
+                do{
+                    columnaRandom = rand.nextInt(maximoColumnas + minimoColumnas) + minimoColumnas;
+                    filaRandom = rand.nextInt(maximoFilas + minimoFilas) + minimoFilas;
+                    if(!"#".equals(tablero[filaRandom][columnaRandom]) && 
+                            !"*".equals(tablero[filaRandom][columnaRandom]) &&
+                            !"$".equals(tablero[filaRandom][columnaRandom]) &&
+                            !"#".equals(tablero[filaRandom][columnaRandom]) &&
+                            !"@".equals(tablero[filaRandom][columnaRandom]) &&
+                            !"V".equals(tablero[filaRandom][columnaRandom]))
+                    {
+                        tablero[filaRandom][columnaRandom] = "@";
+                        contador_fruta_1++;
+                    }
+                }while(contador_fruta_1 <= 0);
+                
+//              Añade la fruta que quita 10 puntos                
+                do{
+                    columnaRandom = rand.nextInt(maximoColumnas + minimoColumnas) + minimoColumnas;
+                    filaRandom = rand.nextInt(maximoFilas + minimoFilas) + minimoFilas;
+                    if(!"#".equals(tablero[filaRandom][columnaRandom]) && 
+                            !"*".equals(tablero[filaRandom][columnaRandom]) &&
+                            !"$".equals(tablero[filaRandom][columnaRandom]) &&
+                            !"#".equals(tablero[filaRandom][columnaRandom]) &&
+                            !"@".equals(tablero[filaRandom][columnaRandom]) &&
+                            !"V".equals(tablero[filaRandom][columnaRandom]))
+                    {
+                        tablero[filaRandom][columnaRandom] = "#";
+                        contador_fruta_3++;
+                    }
+                }while(contador_fruta_3 <= 0);
 
 //              Genera paredes dependiendo de cuantas filas y columnas hayan           
                 do{
-                    columnaRandom = rand.nextInt(columnas - 1);
-                    filaRandom = rand.nextInt(filas - 1);
+                    columnaRandom = rand.nextInt(maximoColumnas + minimoColumnas) + minimoColumnas;
+                    filaRandom = rand.nextInt(maximoFilas + minimoFilas) + minimoFilas;
                     if(!"#".equals(tablero[filaRandom][columnaRandom]) && 
                             !"*".equals(tablero[filaRandom][columnaRandom]) &&
-                            !"*".equals(tablero[filaRandom][columnaRandom]) &&
+                            !"$".equals(tablero[filaRandom][columnaRandom]) &&
+                            !"#".equals(tablero[filaRandom][columnaRandom]) &&
+                            !"@".equals(tablero[filaRandom][columnaRandom]) &&
                             !"V".equals(tablero[filaRandom][columnaRandom]))
                     {
-                    tablero[filaRandom][columnaRandom] = "*";
-                    contador++;
+                        tablero[filaRandom][columnaRandom] = "*";
+                        contador++;
                     }
                 }while(contador<=columnas);
                 while(exit != true)
                 {
+                    
 //              Impresión de la tabla                
                 for(int columna = 0; columna < columnas; columna++){
                     for(int fila = 0; fila < filas; fila++){
@@ -193,14 +256,38 @@ public class JuegoPacman {
 //                  Mueve hacia arriba                    
                     if("w".equals(movimiento) || "W".equals(movimiento))
                     {
-                        if(tablero[PosX][PosY - 1] != "*")
+                        if(tablero[PosX][PosY - 1] == "*")
+                        {
+                            PosY = PosY;
+                            movimientos[contador_datos] += 1;
+                        }else if(tablero[PosX][PosY - 1] == "#")
                         {
                             tablero[PosX][PosY] = " ";
-                            PosY = PosY - 1;
+                            PosY -= 1;
                             tablero[PosX][PosY] = "V";
                             movimientos[contador_datos] += 1;
+                            puntaje[contador_datos] -= 10;
+                            contador_fruta_3 = 0;
+                        }else if(tablero[PosX][PosY - 1] == "$")
+                        {
+                            tablero[PosX][PosY] = " ";
+                            PosY -= 1;
+                            tablero[PosX][PosY] = "V";
+                            movimientos[contador_datos] += 1;
+                            puntaje[contador_datos] += 15;
+                            contador_fruta_2 = 0;
+                        }else if(tablero[PosX][PosY - 1] == "@")
+                        {
+                            tablero[PosX][PosY] = " ";
+                            PosY -= 1;
+                            tablero[PosX][PosY] = "V";
+                            movimientos[contador_datos] += 1;
+                            puntaje[contador_datos] += 10;
+                            contador_fruta_1 = 0;
                         }else{
-                            PosY = PosY;
+                            tablero[PosX][PosY] = " ";
+                            PosY -= 1;
+                            tablero[PosX][PosY] = "V";
                             movimientos[contador_datos] += 1;
                         }
 
@@ -208,14 +295,38 @@ public class JuegoPacman {
 //                  Mueve hacia abajo
                     else if("s".equals(movimiento) || "S".equals(movimiento))
                     {
-                        if(tablero[PosX][PosY + 1] != "*")
+                        if(tablero[PosX][PosY + 1] == "*")
+                        {
+                            PosY = PosY;
+                            movimientos[contador_datos] += 1;
+                        }else if(tablero[PosX][PosY + 1] == "#")
                         {
                             tablero[PosX][PosY] = " ";
-                            PosY = PosY + 1;
+                            PosY += 1;
                             tablero[PosX][PosY] = "V";
                             movimientos[contador_datos] += 1;
+                            puntaje[contador_datos] -= 10;
+                            contador_fruta_3 = 0;
+                        }else if(tablero[PosX][PosY + 1] == "$")
+                        {
+                            tablero[PosX][PosY] = " ";
+                            PosY += 1;
+                            tablero[PosX][PosY] = "V";
+                            movimientos[contador_datos] += 1;
+                            puntaje[contador_datos] += 15;
+                            contador_fruta_2 = 0;
+                        }else if(tablero[PosX][PosY + 1] == "@")
+                        {
+                            tablero[PosX][PosY] = " ";
+                            PosY += 1;
+                            tablero[PosX][PosY] = "V";
+                            movimientos[contador_datos] += 1;
+                            puntaje[contador_datos] += 10;
+                            contador_fruta_1 = 0;
                         }else{
-                            PosY = PosY;
+                            tablero[PosX][PosY] = " ";
+                            PosY += 1;
+                            tablero[PosX][PosY] = "V";
                             movimientos[contador_datos] += 1;
                         }
                     }
@@ -235,14 +346,36 @@ public class JuegoPacman {
                             tablero[PosX][PosY] = "V";
                             }
                         }
-                        else if(tablero[PosX - 1][PosY] != "*")
+                        else if(tablero[PosX - 1][PosY] == "*")
+                        {
+                            PosX = PosX;
+                            movimientos[contador_datos] += 1;
+
+                        }else if(tablero[PosX - 1][PosY] == "#")
                         {
                             tablero[PosX][PosY] = " ";
-                            PosX = PosX - 1;
+                            PosX -= 1;
                             tablero[PosX][PosY] = "V";
-                            movimientos[contador_datos] += 1;
+                            puntaje[contador_datos] -= 10;
+                            contador_fruta_3 = 0;
+                        }else if(tablero[PosX - 1][PosY] == "$")
+                        {
+                            tablero[PosX][PosY] = " ";
+                            PosX -= 1;
+                            tablero[PosX][PosY] = "V";
+                            puntaje[contador_datos] += 15;
+                            contador_fruta_2 = 0;
+                        }else if(tablero[PosX - 1][PosY] == "@")
+                        {
+                            tablero[PosX][PosY] = " ";
+                            PosX -= 1;
+                            tablero[PosX][PosY] = "V";
+                            puntaje[contador_datos] += 10;
+                            contador_fruta_1 = 0;
                         }else{
-                            PosX = PosX;
+                            tablero[PosX][PosY] = " ";
+                            PosX -= 1;
+                            tablero[PosX][PosY] = "V";
                             movimientos[contador_datos] += 1;
                         }
                     }
@@ -262,14 +395,36 @@ public class JuegoPacman {
                                 tablero[PosX][PosY] = "V";
                             }
                         }
-                        else if(tablero[PosX + 1][PosY] != "*")
+                        else if(tablero[PosX + 1][PosY] == "*")
+                        {
+                            PosX = PosX;
+                            movimientos[contador_datos] += 1;
+
+                        }else if(tablero[PosX + 1][PosY] == "#")
                         {
                             tablero[PosX][PosY] = " ";
-                            PosX = PosX + 1;
+                            PosX += 1;
                             tablero[PosX][PosY] = "V";
-                            movimientos[contador_datos] += 1;
+                            puntaje[contador_datos] -= 10;
+                            contador_fruta_3 = 0;
+                        }else if(tablero[PosX + 1][PosY] == "$")
+                        {
+                            tablero[PosX][PosY] = " ";
+                            PosX += 1;
+                            tablero[PosX][PosY] = "V";
+                            puntaje[contador_datos] += 15;
+                            contador_fruta_2 = 0;
+                        }else if(tablero[PosX + 1][PosY] == "@")
+                        {
+                            tablero[PosX][PosY] = " ";
+                            PosX += 1;
+                            tablero[PosX][PosY] = "V";
+                            puntaje[contador_datos] += 10;
+                            contador_fruta_1 = 0;
                         }else{
-                            PosX = PosX;
+                            tablero[PosX][PosY] = " ";
+                            PosX += 1;
+                            tablero[PosX][PosY] = "V";
                             movimientos[contador_datos] += 1;
                         }
                     
@@ -282,6 +437,61 @@ public class JuegoPacman {
                     }else{
                         System.out.println("Ingrese una tecla valida!");
                     }
+                if(contador_fruta_3 == 0)
+                {
+//              Añade la fruta que quita 10 puntos                
+                do{
+                    columnaRandom = rand.nextInt(maximoColumnas + minimoColumnas) + minimoColumnas;
+                    filaRandom = rand.nextInt(maximoFilas + minimoFilas) + minimoFilas;
+                    if(!"#".equals(tablero[filaRandom][columnaRandom]) && 
+                            !"*".equals(tablero[filaRandom][columnaRandom]) &&
+                            !"$".equals(tablero[filaRandom][columnaRandom]) &&
+                            !"#".equals(tablero[filaRandom][columnaRandom]) &&
+                            !"@".equals(tablero[filaRandom][columnaRandom]) &&
+                            !"V".equals(tablero[filaRandom][columnaRandom]))
+                    {
+                        tablero[filaRandom][columnaRandom] = "#";
+                        contador_fruta_3++;
+                    }
+                }while(contador_fruta_3 <= 0);
+                }
+                if(contador_fruta_2 == 0)
+                {
+//              Añade la fruta de 15 puntos
+                do{
+                    columnaRandom = rand.nextInt(maximoColumnas + minimoColumnas) + minimoColumnas;
+                    filaRandom = rand.nextInt(maximoFilas + minimoFilas) + minimoFilas;
+                    if(!"#".equals(tablero[filaRandom][columnaRandom]) && 
+                            !"*".equals(tablero[filaRandom][columnaRandom]) &&
+                            !"$".equals(tablero[filaRandom][columnaRandom]) &&
+                            !"#".equals(tablero[filaRandom][columnaRandom]) &&
+                            !"@".equals(tablero[filaRandom][columnaRandom]) &&
+                            !"V".equals(tablero[filaRandom][columnaRandom]))
+                    {
+                        tablero[filaRandom][columnaRandom] = "$";
+                        contador_fruta_2++;
+                    }
+                }while(contador_fruta_2 <= 0);
+                }
+                if(contador_fruta_1 == 0)
+                {
+//              Añade la fruta de 10 puntos                
+                do{
+                    columnaRandom = rand.nextInt(maximoColumnas + minimoColumnas) + minimoColumnas;
+                    filaRandom = rand.nextInt(maximoFilas + minimoFilas) + minimoFilas;
+                    if(!"#".equals(tablero[filaRandom][columnaRandom]) && 
+                            !"*".equals(tablero[filaRandom][columnaRandom]) &&
+                            !"$".equals(tablero[filaRandom][columnaRandom]) &&
+                            !"#".equals(tablero[filaRandom][columnaRandom]) &&
+                            !"@".equals(tablero[filaRandom][columnaRandom]) &&
+                            !"V".equals(tablero[filaRandom][columnaRandom]))
+                    {
+                        tablero[filaRandom][columnaRandom] = "@";
+                        contador_fruta_1++;
+                    }
+                }while(contador_fruta_1 <= 0);
+                }
+                
                 }
             }
         }
