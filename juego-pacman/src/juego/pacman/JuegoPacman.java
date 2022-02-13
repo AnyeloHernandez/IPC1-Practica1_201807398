@@ -11,6 +11,10 @@ public class JuegoPacman {
      * @param args the command line arguments
      */
     public static void main(String[] args) {
+        // Colores
+        String AMARILLO = "\u001B[33m", AZUL = "\u001B[34m", ROJO = "\u001B[31m";
+        String VERDE = "\u001B[32m", CYAN = "\u001B[36m", ANSI_RESET = "\u001B[0m";
+        
 //      Estructura base para el movimiento de Pacman.   
         int filas, columnas, contador = 0;
         String movimiento;
@@ -22,6 +26,7 @@ public class JuegoPacman {
         int PosX, PosY;
 //      Generador de paredes        
         int columnaRandom, filaRandom;
+        int contador_pacman = 0;
 //      Para guardar el historial
         int contador_datos = 0;
 //      Fruta de 10 puntos
@@ -43,11 +48,11 @@ public class JuegoPacman {
         while(true)
         {
 //      Muestra el menu.
-        System.out.println("**********************\n"
-                + "*1. Jugar            *\n"
-                + "*2. Historial        *\n"
-                + "*3. Salir            *\n"
-                + "**********************"); 
+        System.out.println(AMARILLO + "**********************\n"
+                + "*"+ VERDE + "1. Jugar            "+ AMARILLO +"*\n"
+                + AMARILLO + "*"+ CYAN + "2. Historial        "+ AMARILLO +"*\n"
+                + AMARILLO + "*"+ ROJO + "3. Salir            "+ AMARILLO +"*\n"
+                + AMARILLO + "**********************"); 
         
         Scanner Scn = new Scanner(System.in);
         int menu_opcion = Scn.nextInt();
@@ -97,17 +102,17 @@ public class JuegoPacman {
             }
 //          Creacion del tablero
             String[][] tablero = new String[filas][columnas];
+            String[][] prueba = new String[filas][columnas];
             
             int maximoFilas = filas - 2;
             int maximoColumnas = columnas - 2;
             
-            while(exit != true){
-//          Decide la posicion inicial de pacman               
-            PosX = rand.nextInt(maximoFilas + minimoFilas) + minimoFilas;//filas = 10 | 0, 1, 2,...,9
-            PosY = rand.nextInt(maximoColumnas + minimoColumnas) + minimoColumnas;
-            
             while(exit != true)
             {
+                contador_fruta_1 = 0;
+                contador_fruta_2 = 0;
+                contador_fruta_3 = 0;
+                contador_pacman = 0;
 //              Parte de arriba    
                 for(int fila = 0; fila < filas; fila++)
                 {
@@ -135,14 +140,7 @@ public class JuegoPacman {
 //                  Espacios en blanco    
                     for (int fila = 1; fila < filas; fila++)
                     {
-                        if(PosX == fila && PosY == columna)
-                        {
-                            if(PosX != filas -1 && columnas != filas -1){
-                            tablero[fila][columna] = "V";   
-                            }else{
-                                tablero[fila][columna] = "*";
-                            }
-                        }else{
+                        
                             tablero[fila][columna] = " ";
                             if(fila == filas - 1)
                             {
@@ -161,7 +159,7 @@ public class JuegoPacman {
                                     tablero[filas - 1][columna] = " ";
                                 }
                             }
-                        }
+                        
                     }
                 }
 //              Parte de abajo    
@@ -169,10 +167,21 @@ public class JuegoPacman {
                 {
                     tablero[fila][tablero[0].length - 1] = "*"; 
                 }
-//              Revisa si el pacman aparece dentro de una celda con valor *
-                if(tablero[PosX][PosY] == "*"){
-                    break;
-                }
+//               Decide la posicion inicial de pacman               
+                do{
+                    PosX = rand.nextInt(maximoFilas + minimoFilas) + minimoFilas;//filas = 10 | 0, 1, 2,...,9
+                    PosY = rand.nextInt(maximoColumnas + minimoColumnas) + minimoColumnas;
+                    if(!"#".equals(tablero[PosX][PosY]) && 
+                            !"*".equals(tablero[PosX][PosY]) &&
+                            !"$".equals(tablero[PosX][PosY]) &&
+                            !"@".equals(tablero[PosX][PosY]) &&
+                            !"V".equals(tablero[PosX][PosY]))
+                    {
+                        tablero[PosX][PosY] = "V";
+                        prueba[PosX][PosY] = "V";
+                        contador_pacman++;
+                    }
+                }while(contador_pacman <= 0);
 //              Añade la fruta de 15 puntos                
                 do{
                     columnaRandom = rand.nextInt(maximoColumnas + minimoColumnas) + minimoColumnas;
@@ -180,11 +189,11 @@ public class JuegoPacman {
                     if(!"#".equals(tablero[filaRandom][columnaRandom]) && 
                             !"*".equals(tablero[filaRandom][columnaRandom]) &&
                             !"$".equals(tablero[filaRandom][columnaRandom]) &&
-                            !"#".equals(tablero[filaRandom][columnaRandom]) &&
                             !"@".equals(tablero[filaRandom][columnaRandom]) &&
                             !"V".equals(tablero[filaRandom][columnaRandom]))
                     {
                         tablero[filaRandom][columnaRandom] = "$";
+                        prueba[filaRandom][columnaRandom] = "$";
                         contador_fruta_2++;
                     }
                 }while(contador_fruta_2 <= 0);
@@ -196,11 +205,11 @@ public class JuegoPacman {
                     if(!"#".equals(tablero[filaRandom][columnaRandom]) && 
                             !"*".equals(tablero[filaRandom][columnaRandom]) &&
                             !"$".equals(tablero[filaRandom][columnaRandom]) &&
-                            !"#".equals(tablero[filaRandom][columnaRandom]) &&
                             !"@".equals(tablero[filaRandom][columnaRandom]) &&
                             !"V".equals(tablero[filaRandom][columnaRandom]))
                     {
                         tablero[filaRandom][columnaRandom] = "@";
+                        prueba[filaRandom][columnaRandom] = "@";
                         contador_fruta_1++;
                     }
                 }while(contador_fruta_1 <= 0);
@@ -212,23 +221,23 @@ public class JuegoPacman {
                     if(!"#".equals(tablero[filaRandom][columnaRandom]) && 
                             !"*".equals(tablero[filaRandom][columnaRandom]) &&
                             !"$".equals(tablero[filaRandom][columnaRandom]) &&
-                            !"#".equals(tablero[filaRandom][columnaRandom]) &&
                             !"@".equals(tablero[filaRandom][columnaRandom]) &&
                             !"V".equals(tablero[filaRandom][columnaRandom]))
                     {
                         tablero[filaRandom][columnaRandom] = "#";
+                        prueba[filaRandom][columnaRandom] = "#";
                         contador_fruta_3++;
                     }
                 }while(contador_fruta_3 <= 0);
 
 //              Genera paredes dependiendo de cuantas filas y columnas hayan           
+                if(filas<=columnas){
                 do{
                     columnaRandom = rand.nextInt(maximoColumnas + minimoColumnas) + minimoColumnas;
                     filaRandom = rand.nextInt(maximoFilas + minimoFilas) + minimoFilas;
                     if(!"#".equals(tablero[filaRandom][columnaRandom]) && 
                             !"*".equals(tablero[filaRandom][columnaRandom]) &&
                             !"$".equals(tablero[filaRandom][columnaRandom]) &&
-                            !"#".equals(tablero[filaRandom][columnaRandom]) &&
                             !"@".equals(tablero[filaRandom][columnaRandom]) &&
                             !"V".equals(tablero[filaRandom][columnaRandom]))
                     {
@@ -236,13 +245,54 @@ public class JuegoPacman {
                         contador++;
                     }
                 }while(contador<=columnas);
+                }else{
+                    do{
+                    columnaRandom = rand.nextInt(maximoColumnas + minimoColumnas) + minimoColumnas;
+                    filaRandom = rand.nextInt(maximoFilas + minimoFilas) + minimoFilas;
+                    if(!"#".equals(tablero[filaRandom][columnaRandom]) && 
+                            !"*".equals(tablero[filaRandom][columnaRandom]) &&
+                            !"$".equals(tablero[filaRandom][columnaRandom]) &&
+                            !"@".equals(tablero[filaRandom][columnaRandom]) &&
+                            !"V".equals(tablero[filaRandom][columnaRandom]))
+                    {
+                        tablero[filaRandom][columnaRandom] = "*";
+                        contador++;
+                    }
+                }while(contador<=filas);
+                }
                 while(exit != true)
                 {
+                
+                for(int i = 0; i <= nombre.length -1; i++)
+                {
+                    if(nombre[i] != null) //Solo muestra los valores que no sean cero.
+                    { 
+                        System.out.println("----------------------");
+                        System.out.println("Nombre: " + nombre[i]);
+                        System.out.println("Puntaje: " + puntaje[i]);
+                        System.out.println("Movimientos: " + movimientos[i]);
+
+                    }
+                }
+            System.out.println("----------------------");
                     
 //              Impresión de la tabla                
                 for(int columna = 0; columna < columnas; columna++){
                     for(int fila = 0; fila < filas; fila++){
-                        System.out.print(tablero[fila][columna] + " ");
+                        if("*".equals(tablero[fila][columna]))
+                        {
+                            System.out.print(AZUL + tablero[fila][columna] + " " + ANSI_RESET);
+                        }else if("#".equals(tablero[fila][columna])){
+                            System.out.print(ROJO + tablero[fila][columna] + " " + ANSI_RESET);
+                        }else if("$".equals(tablero[fila][columna])){
+                            System.out.print(VERDE + tablero[fila][columna] + " " + ANSI_RESET);
+                        }else if("@".equals(tablero[fila][columna])){
+                            System.out.print(CYAN + tablero[fila][columna] + " " + ANSI_RESET);
+                        }else if("V".equals(tablero[fila][columna])){
+                            System.out.print(AMARILLO + tablero[fila][columna] + " " + ANSI_RESET);
+                        }else{
+                            System.out.print(tablero[fila][columna] + " ");
+                        }
                     }
                     System.out.println("");
                 }
@@ -340,12 +390,31 @@ public class JuegoPacman {
                             {
                                 PosX = PosX;
                                 movimientos[contador_datos] += 1;
+                            }else if(tablero[filas - 1][PosY] == "#"){
+                                tablero[PosX][PosY] = " ";
+                                PosX = filas - 1;
+                                tablero[PosX][PosY] = "V";
+                                puntaje[contador_datos] -= 10;
+                                contador_fruta_3 = 0;
+                            }else if(tablero[filas - 1][PosY] == "$"){
+                                tablero[PosX][PosY] = " ";
+                                PosX = filas - 1;
+                                tablero[PosX][PosY] = "V";
+                                puntaje[contador_datos] += 15;
+                                contador_fruta_2 = 0;
+                            }else if(tablero[filas - 1][PosY] == "@"){
+                                tablero[PosX][PosY] = " ";
+                                PosX = filas - 1;
+                                tablero[PosX][PosY] = "V";
+                                puntaje[contador_datos] += 10;
+                                contador_fruta_1 = 0;
                             }else{
-                            tablero[PosX][PosY] = " ";
-                            PosX = filas - 1;
-                            tablero[PosX][PosY] = "V";
+                                tablero[PosX][PosY] = " ";
+                                PosX = filas - 1;
+                                tablero[PosX][PosY] = "V";
                             }
                         }
+//                      Resto del movimiento
                         else if(tablero[PosX - 1][PosY] == "*")
                         {
                             PosX = PosX;
@@ -384,17 +453,36 @@ public class JuegoPacman {
                     {
 //                      Teletransportación del lado derecho
                         if(PosX == filas - 1)
-                            {
+                        {
                             if(tablero[0][PosY] == "*")
                             {
                                 PosX = PosX;
                                 movimientos[contador_datos] += 1;
+                            }else if(tablero[0][PosY] == "#"){
+                                tablero[PosX][PosY] = " ";
+                                PosX = 0;
+                                tablero[PosX][PosY] = "V";
+                                puntaje[contador_datos] -= 10;
+                                contador_fruta_3 = 0;
+                            }else if(tablero[0][PosY] == "$"){
+                                tablero[PosX][PosY] = " ";
+                                PosX = 0;
+                                tablero[PosX][PosY] = "V";
+                                puntaje[contador_datos] += 15;
+                                contador_fruta_2 = 0;
+                            }else if(tablero[0][PosY] == "@"){
+                                tablero[PosX][PosY] = " ";
+                                PosX = 0;
+                                tablero[PosX][PosY] = "V";
+                                puntaje[contador_datos] += 10;
+                                contador_fruta_1 = 0;
                             }else{
                                 tablero[PosX][PosY] = " ";
                                 PosX = 0;
                                 tablero[PosX][PosY] = "V";
                             }
                         }
+//                      Resto del movimiento
                         else if(tablero[PosX + 1][PosY] == "*")
                         {
                             PosX = PosX;
@@ -495,7 +583,6 @@ public class JuegoPacman {
                 }
             }
         }
-        }
         else if(menu_opcion == 2)
         {
 //          Impresion del historial
@@ -503,14 +590,15 @@ public class JuegoPacman {
             {
                 if(nombre[i] != null) //Solo muestra los valores que no sean cero.
                 { 
+                    System.out.println("----------------------");
                     System.out.println("Nombre del jugador: "+ nombre[i]);
                     System.out.println("Edad: "+ edad[i]);
                     System.out.println("Puntaje: "+ puntaje[i]);
                     System.out.println("Movimientos: "+ movimientos[i]);
-                    System.out.println("");
+                    
                 }
             }
-            System.out.println("MOSTRAR HISTORIAL"); // Se mostrara el historial (pendiente)
+            System.out.println("----------------------");
         }
         else if(menu_opcion == 3)
         {
