@@ -53,7 +53,7 @@ public class JuegoPacman {
                 + "*"+ VERDE + "1. Jugar            "+ AMARILLO +"*\n"
                 + AMARILLO + "*"+ CYAN + "2. Historial        "+ AMARILLO +"*\n"
                 + AMARILLO + "*"+ ROJO + "3. Salir            "+ AMARILLO +"*\n"
-                + AMARILLO + "**********************"); 
+                + AMARILLO + "**********************" + ANSI_RESET); 
         
         Scanner Scn = new Scanner(System.in);
         int menu_opcion = Scn.nextInt();
