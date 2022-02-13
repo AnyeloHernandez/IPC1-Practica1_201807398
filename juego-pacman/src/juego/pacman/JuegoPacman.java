@@ -14,6 +14,7 @@ public class JuegoPacman {
         // Colores
         String AMARILLO = "\u001B[33m", AZUL = "\u001B[34m", ROJO = "\u001B[31m";
         String VERDE = "\u001B[32m", CYAN = "\u001B[36m", ANSI_RESET = "\u001B[0m";
+        String MORADO = "\u001B[35m";
         
 //      Estructura base para el movimiento de Pacman.   
         int filas, columnas, contador = 0;
@@ -113,6 +114,7 @@ public class JuegoPacman {
                 contador_fruta_2 = 0;
                 contador_fruta_3 = 0;
                 contador_pacman = 0;
+                puntaje[contador_datos] = 10;
 //              Parte de arriba    
                 for(int fila = 0; fila < filas; fila++)
                 {
@@ -263,18 +265,11 @@ public class JuegoPacman {
                 while(exit != true)
                 {
                 
-                for(int i = 0; i <= nombre.length -1; i++)
-                {
-                    if(nombre[i] != null) //Solo muestra los valores que no sean cero.
-                    { 
-                        System.out.println("----------------------");
-                        System.out.println("Nombre: " + nombre[i]);
-                        System.out.println("Puntaje: " + puntaje[i]);
-                        System.out.println("Movimientos: " + movimientos[i]);
-
-                    }
-                }
-            System.out.println("----------------------");
+                System.out.println("----------------------");
+                System.out.println(CYAN + "Nombre: " + VERDE + nombre[contador_datos] + ANSI_RESET);
+                System.out.println(CYAN + "Puntaje: " + MORADO + puntaje[contador_datos] + ANSI_RESET); 
+                System.out.println(CYAN + "Movimientos: " + ROJO + movimientos[contador_datos] + ANSI_RESET);
+                System.out.println("----------------------");
                     
 //              Impresión de la tabla                
                 for(int columna = 0; columna < columnas; columna++){
@@ -580,6 +575,16 @@ public class JuegoPacman {
                 }while(contador_fruta_1 <= 0);
                 }
                 
+                if(puntaje[contador_datos] >= 100){
+                    exit = true;
+                    contador_datos++;
+                    System.out.println(VERDE + "¡HAS GANDO!" + ANSI_RESET);
+                }else if(puntaje[contador_datos] <= 0){
+                    exit = true;
+                    contador_datos++;
+                    System.out.println(ROJO + "Has perdido." + ANSI_RESET);
+                }
+                
                 }
             }
         }
@@ -591,10 +596,10 @@ public class JuegoPacman {
                 if(nombre[i] != null) //Solo muestra los valores que no sean cero.
                 { 
                     System.out.println("----------------------");
-                    System.out.println("Nombre del jugador: "+ nombre[i]);
-                    System.out.println("Edad: "+ edad[i]);
-                    System.out.println("Puntaje: "+ puntaje[i]);
-                    System.out.println("Movimientos: "+ movimientos[i]);
+                    System.out.println(CYAN + "Nombre del jugador: "+ VERDE + nombre[i] + ANSI_RESET);
+                    System.out.println(CYAN + "Edad: "+ VERDE + edad[i] + ANSI_RESET);
+                    System.out.println(CYAN + "Puntaje: "+ MORADO + puntaje[i] + ANSI_RESET);
+                    System.out.println(CYAN + "Movimientos: "+ ROJO + movimientos[i] + ANSI_RESET);
                     
                 }
             }
@@ -604,6 +609,8 @@ public class JuegoPacman {
         {
             System.out.println("Se salió del programa.");
             System.exit(0);
+        }else{
+            System.out.println("Ingrese una opción válida.");
         }
         
         }       
